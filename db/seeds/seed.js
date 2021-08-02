@@ -59,6 +59,9 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
     formatTopicsData(topicData)
   );
 
+  console.log(topicData, "<--- topic  data");
+  console.log(formatTopicsData(topicData), "<--- formatted topic data");
+
   // 2. insert data
   const insertData = await db.query(topicDataInsert);
 
@@ -93,7 +96,7 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
   );
 
   const commentInsertData = await db.query(commentsDataInsert);
-  console.log(commentInsertData.rows);
+  // console.log(commentInsertData.rows);
 };
 
 module.exports = seed;

@@ -6,6 +6,7 @@ const formatTopicsData = (topicData) => {
     return [topic.slug, topic.description];
   });
 };
+
 const formatUsersData = (userData) => {
   return userData.map(function (user) {
     return [user.username, user.avatar_url, user.name];
