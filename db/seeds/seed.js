@@ -13,14 +13,14 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
   await db.query(`DROP TABLE IF EXISTS users;`);
   await db.query(`DROP TABLE IF EXISTS topics;`);
 
-  console.log("tables dropped");
+  // console.log("tables dropped");
 
   await db.query(`CREATE TABLE topics (
     slug VARCHAR(100) PRIMARY KEY,
     description VARCHAR(250) NOT NULL
   );`);
 
-  console.log("topics table created");
+  // console.log("topics table created");
 
   await db.query(`CREATE TABLE users (
     username VARCHAR(200) PRIMARY KEY,
@@ -28,7 +28,7 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
     name VARCHAR(100) NOT NULL
   );`);
 
-  console.log("users table created");
+  // console.log("users table created");
 
   await db.query(`CREATE TABLE articles (
    article_id SERIAL PRIMARY KEY,
@@ -40,7 +40,7 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
    created_at TIMESTAMP DEFAULT NOW()
     );`);
 
-  console.log("articles table created");
+  // console.log("articles table created");
 
   await db.query(`CREATE TABLE comments (
     comment_id SERIAL PRIMARY KEY,
@@ -51,7 +51,7 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
     body VARCHAR(2000) NOT NULL
       );`);
 
-  console.log("comments table created");
+  // console.log("comments table created");
 
   const topicDataInsert = format(
     `INSERT INTO topics 
@@ -61,7 +61,7 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
   );
 
   const topicDataResult = await db.query(topicDataInsert);
-  console.log("topic data inserted");
+  // console.log("topic data inserted");
 
   const userDataInsert = format(
     `INSERT INTO users
@@ -71,7 +71,7 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
   );
 
   const userDataResult = await db.query(userDataInsert);
-  console.log("user data inserted");
+  // console.log("user data inserted");
 
   const articleDataInsert = format(
     `INSERT INTO articles
@@ -81,7 +81,7 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
   );
 
   const articleDataResult = await db.query(articleDataInsert);
-  console.log("article data inserted");
+  // console.log("article data inserted");
 
   const commentDataInsert = format(
     `INSERT INTO comments
@@ -91,7 +91,7 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
   );
 
   const commentDataResult = await db.query(commentDataInsert);
-  console.log("comment data inserted");
+  // console.log("comment data inserted");
 };
 
 module.exports = seed;
