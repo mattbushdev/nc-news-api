@@ -1,31 +1,30 @@
-const { formatTopicsData } = require("../db/utils/data-manipulation");
+const { formatTopicData } = require("../db/utils/data-manipulation");
 
-describe("formatTopicsData", () => {
-  test("should return an nested array when passed an array of objects", () => {
-    let input = [
+describe("formatTopicData", () => {
+  test("should return a nested array when passed empty array", () => {
+    expect(formatTopicData([])).toEqual([]);
+  });
+  test("should return an nested array when passed an array of object", () => {
+    const topics = [{ description: "FOOTIE!", slug: "football" }];
+    expect(Array.isArray(formatTopicData(topics))).toBe(true);
+    expect(formatTopicData(topics)).toEqual([["football", "FOOTIE!"]]);
+  });
+  test("nested array should have slug key value at position 0 followed by description key value at position 1", () => {
+    const topics = [
       { description: "Code is love, code is life", slug: "coding" },
       { description: "FOOTIE!", slug: "football" },
     ];
-
-    let result = formatTopicsData(input);
-    expect(Array.isArray(result)).toBe(true);
-    expect(result).toEqual([
+    expect(formatTopicData(topics)[0]).not.toEqual(topics[0]);
+  });
+  test("should return an array with multiple nested arrays when passed array of objects", () => {
+    const topics = [
+      { description: "Code is love, code is life", slug: "coding" },
+      { description: "FOOTIE!", slug: "football" },
+    ];
+    expect(formatTopicData(topics)).toEqual([
       ["coding", "Code is love, code is life"],
       ["football", "FOOTIE!"],
     ]);
-  });
-  test("should return nested array when passed empty array", () => {
-    let input = [];
-
-    let result = formatTopicsData(input);
-    expect(Array.isArray(result)).toBe(true);
-    expect(result).toEqual([]);
-  });
-  test("should return arrays with 2 nested elements", () => {
-    let input = [
-      { description: "Code is love, code is life", slug: "coding" },
-      { description: "FOOTIE!", slug: "football" },
-    ];
-    expect(formatTopicsData(input)[0]).toHaveLength(2);
+    expect(formatTopicData(topics)).toHaveLength(2);
   });
 });

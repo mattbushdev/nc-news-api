@@ -1,29 +1,30 @@
 const db = require("../connection.js");
 const format = require("pg-format");
-// const data = require("../data/development-data/index.js");
 const {
-  formatTopicsData,
-  formatUsersData,
+  formatTopicData,
+  formatUserData,
   formatArticleData,
   formatCommentData,
 } = require("../utils/data-manipulation");
+
 const seed = async ({ articleData, commentData, topicData, userData }) => {
   await db.query(`DROP TABLE IF EXISTS comments;`);
   await db.query(`DROP TABLE IF EXISTS articles;`);
   await db.query(`DROP TABLE IF EXISTS users;`);
   await db.query(`DROP TABLE IF EXISTS topics;`);
+
   console.log("tables dropped");
 
   await db.query(`CREATE TABLE topics (
-    slug TEXT PRIMARY KEY,
-    description TEXT
+    slug VARCHAR(100) PRIMARY KEY,
+    description VARCHAR(250) NOT NULL
   );`);
 
   console.log("topics table created");
 
   await db.query(`CREATE TABLE users (
-    username TEXT PRIMARY KEY,
-    avatar_url TEXT,
+    username VARCHAR(200) PRIMARY KEY,
+    avatar_url VARCHAR(200),
     name VARCHAR(100) NOT NULL
   );`);
 
@@ -31,11 +32,11 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
 
   await db.query(`CREATE TABLE articles (
    article_id SERIAL PRIMARY KEY,
-   title VARCHAR(100) NOT NULL,
-   body TEXT NOT NULL,
+   title VARCHAR(200) NOT NULL,
+   body VARCHAR(2000) NOT NULL,
    votes INT DEFAULT 0,
-   topic TEXT REFERENCES topics(slug) NOT NULL,
-   author VARCHAR(100) REFERENCES users(username),
+   topic VARCHAR(100) REFERENCES topics(slug) NOT NULL,
+   author VARCHAR(100) REFERENCES users(username) NOT NULL,
    created_at TIMESTAMP DEFAULT NOW()
     );`);
 
@@ -43,11 +44,11 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
 
   await db.query(`CREATE TABLE comments (
     comment_id SERIAL PRIMARY KEY,
-    author VARCHAR(20) REFERENCES users(username),
-    article_id INT REFERENCES articles(article_id),
+    author VARCHAR(100) REFERENCES users(username) NOT NULL,
+    article_id INT REFERENCES articles(article_id) NOT NULL,
     votes INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT NOW(),
-    body TEXT NOT NULL
+    body VARCHAR(2000) NOT NULL
       );`);
 
   console.log("comments table created");
@@ -56,24 +57,21 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
     `INSERT INTO topics 
   (slug, description)
   VALUES %L RETURNING *;`,
-    formatTopicsData(topicData)
+    formatTopicData(topicData)
   );
 
-  // 2. insert data
-  const insertData = await db.query(topicDataInsert);
-
-  //console.log(insertData.rows);
+  const topicDataResult = await db.query(topicDataInsert);
+  console.log("topic data inserted");
 
   const userDataInsert = format(
     `INSERT INTO users
     (username, avatar_url, name)
     VALUES %L RETURNING *;`,
-    formatUsersData(userData)
+    formatUserData(userData)
   );
 
-  const userInsertData = await db.query(userDataInsert);
-
-  //console.log(userInsertData.rows);
+  const userDataResult = await db.query(userDataInsert);
+  console.log("user data inserted");
 
   const articleDataInsert = format(
     `INSERT INTO articles
@@ -82,18 +80,18 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
     formatArticleData(articleData)
   );
 
-  const articleInsertData = await db.query(articleDataInsert);
+  const articleDataResult = await db.query(articleDataInsert);
+  console.log("article data inserted");
 
-  //COMMENTS
-  const commentsDataInsert = format(
+  const commentDataInsert = format(
     `INSERT INTO comments
     (author, article_id, votes, created_at, body)
     VALUES %L RETURNING *;`,
-    formatCommentData(commentData, articleInsertData.rows)
+    formatCommentData(commentData, articleDataResult.rows)
   );
 
-  const commentInsertData = await db.query(commentsDataInsert);
-  // console.log(commentInsertData.rows);
+  const commentDataResult = await db.query(commentDataInsert);
+  console.log("comment data inserted");
 };
 
 module.exports = seed;

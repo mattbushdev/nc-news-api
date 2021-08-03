@@ -1,19 +1,17 @@
-const articles = require("../data/development-data/articles");
-
-// extract any functions you are using to manipulate your data, into this file
-const formatTopicsData = (topicData) => {
-  return topicData.map(function (topic) {
+exports.formatTopicData = (topicData) => {
+  return topicData.map((topic) => {
     return [topic.slug, topic.description];
   });
 };
 
-const formatUsersData = (userData) => {
-  return userData.map(function (user) {
+exports.formatUserData = (userData) => {
+  return userData.map((user) => {
     return [user.username, user.avatar_url, user.name];
   });
 };
-const formatArticleData = (articleData) => {
-  return articleData.map(function (article) {
+
+exports.formatArticleData = (articleData) => {
+  return articleData.map((article) => {
     return [
       article.title,
       article.body,
@@ -24,17 +22,17 @@ const formatArticleData = (articleData) => {
     ];
   });
 };
-const formatCommentData = (commentData, articleInsertData) => {
-  return commentData.map(function (comment) {
+
+exports.formatCommentData = (commentData, articleDataResult) => {
+  return commentData.map((comment) => {
     let author = "";
     let article_id = 0;
-    articleInsertData.forEach(function (article) {
+    articleDataResult.forEach((article) => {
       if (comment.belongs_to === article.title) {
         author = article.author;
         article_id = article.article_id;
       }
     });
-    //console.log(author);
     return [
       author,
       article_id,
@@ -43,10 +41,4 @@ const formatCommentData = (commentData, articleInsertData) => {
       comment.body,
     ];
   });
-};
-module.exports = {
-  formatTopicsData,
-  formatUsersData,
-  formatArticleData,
-  formatCommentData,
 };
