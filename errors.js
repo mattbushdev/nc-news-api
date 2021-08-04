@@ -10,7 +10,7 @@ exports.handlePSQLErrors = (err, req, res, next) => {
   }
 };
 
-exports.handleNonExistentId = (err, req, res, next) => {
+exports.handleBadRequests = (err, req, res, next) => {
   if (err) {
     res.status(err.status).send({ message: err.message });
   } else {
