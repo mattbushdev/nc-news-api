@@ -27,7 +27,7 @@ describe("GET - /api/topics", () => {
 });
 
 describe("GET - /api/articles/:article_id", () => {
-  test.only("200 - returns the specified article object", async () => {
+  test("200 - returns the specified article object with count of comments", async () => {
     const response = await request(app).get("/api/articles/1").expect(200);
     expect(response.body.article).toEqual({
       article_id: 1,
@@ -37,6 +37,37 @@ describe("GET - /api/articles/:article_id", () => {
       title: "Living in the shadow of a great man",
       topic: "mitch",
       votes: 100,
+      comment_count: "13",
     });
+  });
+  test("200 - returns the specified article object with count of 0 if no comments exist", async () => {
+    const response = await request(app).get("/api/articles/2").expect(200);
+    expect(response.body.article).toEqual({
+      article_id: 2,
+      title: "Sony Vaio; or, The Laptop",
+      body: "Call me Mitchell. Some years ago—never mind how long precisely—having little or no money in my purse, and nothing particular to interest me on shore, I thought I would buy a laptop about a little and see the codey part of the world. It is a way I have of driving off the spleen and regulating the circulation. Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul; whenever I find myself involuntarily pausing before coffin warehouses, and bringing up the rear of every funeral I meet; and especially whenever my hypos get such an upper hand of me, that it requires a strong moral principle to prevent me from deliberately stepping into the street, and methodically knocking people’s hats off—then, I account it high time to get to coding as soon as I can. This is my substitute for pistol and ball. With a philosophical flourish Cato throws himself upon his sword; I quietly take to the laptop. There is nothing surprising in this. If they but knew it, almost all men in their degree, some time or other, cherish very nearly the same feelings towards the the Vaio with me.",
+      votes: 0,
+      topic: "mitch",
+      author: "icellusedkars",
+      created_at: "2020-10-16T05:03:00.000Z",
+      comment_count: "0",
+    });
+  });
+  test("400 - responds with bad request for invalid article_id", async () => {
+    const response = await request(app).get("/api/articles/cat").expect(400);
+    expect(response.body.message).toBe(
+      'invalid input syntax for type integer: "cat"'
+    );
+  });
+  test("404 - responds with not found for non-existent article_id", async () => {
+    const response = await request(app).get("/api/articles/12345").expect(404);
+    expect(response.body.message).toBe("article id does not exist");
+  });
+});
+
+describe("PATCH - /api/articles/:article_id", () => {
+  test("200 - returns patched article object", () => {
+    const response = await request(app).patch("/api/articles/5").expect("200");
+    expect(response.body.article).toBe({});
   });
 });
