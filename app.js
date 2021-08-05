@@ -17,4 +17,7 @@ app.use(handlePSQLErrors);
 
 app.use(handleBadRequests);
 
+app.use((err, req, res, next) => {
+  // console.log(err);
+});
 module.exports = app;
