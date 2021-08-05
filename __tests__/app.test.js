@@ -223,7 +223,7 @@ describe("GET - /api/articles?", () => {
   });
 });
 
-describe.only("GET - /api/articles/:article_id/comments", () => {
+describe("GET - /api/articles/:article_id/comments", () => {
   test("200 - returns an array of comments for the given article_id", async () => {
     const { body } = await request(app)
       .get("/api/articles/1/comments")
@@ -264,6 +264,3 @@ describe.only("GET - /api/articles/:article_id/comments", () => {
     expect(body.message).toBe("article id does not exist");
   });
 });
-
-//TODO
-//error handling for filter undefined value
