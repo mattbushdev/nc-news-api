@@ -4,6 +4,7 @@ const {
   getArticleById,
   patchArticleById,
   getCommentsByArticleId,
+  postCommentByArticleId,
 } = require("../controllers/articles.controller");
 
 articlesRouter.route("/").get(getArticles);
@@ -13,6 +14,9 @@ articlesRouter
   .get(getArticleById)
   .patch(patchArticleById);
 
-articlesRouter.route("/:article_id/comments").get(getCommentsByArticleId);
+articlesRouter
+  .route("/:article_id/comments")
+  .get(getCommentsByArticleId)
+  .post(postCommentByArticleId);
 
 module.exports = articlesRouter;

@@ -10,10 +10,10 @@ exports.handlePSQLErrors = (err, req, res, next) => {
   }
 };
 
-exports.handleBadRequests = (err, req, res, next) => {
+exports.handleCustomErrors = (err, req, res, next) => {
   if (err) {
     res.status(err.status).send({ message: err.message });
   } else {
-    next(err);
+    res.status(500).send({ message: "internal server error" });
   }
 };

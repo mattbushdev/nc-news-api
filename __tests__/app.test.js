@@ -230,12 +230,6 @@ describe("GET - /api/articles/:article_id/comments", () => {
       .expect(200);
     expect(Array.isArray(body.comments)).toBe(true);
     expect(body.comments).toHaveLength(13);
-  });
-  test("200 - returns comments with the correct properties", async () => {
-    const { body } = await request(app)
-      .get("/api/articles/1/comments")
-      .expect(200);
-    const { comments } = body;
     comments.forEach((comment) => {
       expect(comment).toHaveProperty("comment_id");
       expect(comment).toHaveProperty("votes");
@@ -262,5 +256,70 @@ describe("GET - /api/articles/:article_id/comments", () => {
       .get("/api/articles/12345/comments")
       .expect(404);
     expect(body.message).toBe("article id does not exist");
+  });
+});
+
+describe("POST - /api/articles/:article_id/comments", () => {
+  test("201 - returns a new comment from specified article", async () => {
+    const postComment = {
+      username: "icellusedkars",
+      body: "not a particularly thrilling read",
+    };
+    const { body } = await request(app)
+      .post("/api/articles/5/comments")
+      .send(postComment)
+      .expect(201);
+    expect(body.comment).toMatchObject({
+      article_id: 5,
+      author: "icellusedkars",
+      body: "not a particularly thrilling read",
+      comment_id: 19,
+      votes: 0,
+    });
+    expect(body.comment).toHaveProperty("created_at");
+  });
+  test("400 - responds with bad request for a username that does not exist", async () => {
+    const postComment = {
+      username: "icellusedkars",
+    };
+    const { body } = await request(app)
+      .post("/api/articles/5/comments")
+      .send(postComment)
+      .expect(400);
+    expect(body.message).toBe("no body property");
+  });
+  test("400 - responds with bad request for a username that does not exist", async () => {
+    const postComment = {
+      username: "icellusedkars",
+      body: "not a particularly thrilling read",
+      invalidKey: "string",
+    };
+    const { body } = await request(app)
+      .post("/api/articles/5/comments")
+      .send(postComment)
+      .expect(400);
+    expect(body.message).toBe("invalid property in request body");
+  });
+  test("404 - responds with bad request for article_id that does not exist", async () => {
+    const postComment = {
+      username: "icellusedkars",
+      body: "not a particularly thrilling read",
+    };
+    const { body } = await request(app)
+      .post("/api/articles/12345/comments")
+      .send(postComment)
+      .expect(404);
+    expect(body.message).toBe("article id does not exist");
+  });
+  test("404 - responds with bad request for a username that does not exist", async () => {
+    const postComment = {
+      username: "matt",
+      body: "not a particularly thrilling read",
+    };
+    const { body } = await request(app)
+      .post("/api/articles/5/comments")
+      .send(postComment)
+      .expect(404);
+    expect(body.message).toBe("username: matt does not exist");
   });
 });

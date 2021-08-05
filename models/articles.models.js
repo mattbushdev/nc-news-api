@@ -18,12 +18,6 @@ exports.selectArticleById = async (article_id) => {
         status: 404,
         message: "article id does not exist",
       });
-    } else {
-      console.log("should be here");
-      return Promise.reject({
-        status: 404,
-        message: "comment does not exist",
-      });
     }
   }
   return response.rows[0];
@@ -124,6 +118,47 @@ exports.selectCommentsByArticleId = async (article_id) => {
   return response.rows;
 };
 
+exports.insertCommentByArticleId = async (article_id, postBody) => {
+  const { username, body } = postBody;
+  const articleExists = await checkArticleExists(article_id);
+  if (!articleExists) {
+    return Promise.reject({
+      status: 404,
+      message: "article id does not exist",
+    });
+  }
+
+  const userExists = await checkUserExists(username);
+  if (!userExists) {
+    return Promise.reject({
+      status: 404,
+      message: `username: ${username} does not exist`,
+    });
+  }
+
+  if (!body) {
+    return Promise.reject({
+      status: 400,
+      message: "no body property",
+    });
+  }
+
+  if (Object.keys(postBody).length > 2) {
+    return Promise.reject({
+      status: 400,
+      message: "invalid property in request body",
+    });
+  }
+
+  const { rows } = await db.query(
+    `INSERT INTO comments (author, article_id, body ) 
+    VALUES ($1, $2, $3) RETURNING *;`,
+    [username, article_id, body]
+  );
+
+  return rows[0];
+};
+
 const checkArticleExists = async (article_id) => {
   const response = await db.query(
     "SELECT * FROM articles WHERE articles.article_id=$1",
@@ -136,6 +171,14 @@ const checkArticleExists = async (article_id) => {
 const checkTopicExists = async (topic) => {
   const { rows } = await db.query(`SELECT * FROM topics WHERE slug=$1;`, [
     topic,
+  ]);
+  if (rows.length === 0) return false;
+  return true;
+};
+
+const checkUserExists = async (username) => {
+  const { rows } = await db.query(`SELECT * FROM users WHERE username=$1;`, [
+    username,
   ]);
   if (rows.length === 0) return false;
   return true;
