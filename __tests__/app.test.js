@@ -7,6 +7,13 @@ const app = require("../app");
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
+describe("GET - /api", () => {
+  test("200 - returns a json describing all the available endpoints of the API", async () => {
+    const { body } = await request(app).get("/api").expect(200);
+    expect(body).toHaveLength(7);
+  });
+});
+
 describe("GET - /api/topics", () => {
   test("200 - returns an array of topics", async () => {
     const { body } = await request(app).get("/api/topics").expect(200);
@@ -228,8 +235,9 @@ describe("GET - /api/articles/:article_id/comments", () => {
     const { body } = await request(app)
       .get("/api/articles/1/comments")
       .expect(200);
+    const { comments } = body;
     expect(Array.isArray(body.comments)).toBe(true);
-    expect(body.comments).toHaveLength(13);
+    expect(comments).toHaveLength(13);
     comments.forEach((comment) => {
       expect(comment).toHaveProperty("comment_id");
       expect(comment).toHaveProperty("votes");
@@ -260,7 +268,7 @@ describe("GET - /api/articles/:article_id/comments", () => {
 });
 
 describe("POST - /api/articles/:article_id/comments", () => {
-  test("201 - returns a new comment from specified article", async () => {
+  test.only("201 - returns a new comment from specified article", async () => {
     const postComment = {
       username: "icellusedkars",
       body: "not a particularly thrilling read",

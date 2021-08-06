@@ -97,7 +97,7 @@ exports.selectArticles = async (query) => {
 };
 
 exports.selectCommentsByArticleId = async (article_id) => {
-  const response = await db.query(
+  const { rows } = await db.query(
     `
   SELECT comments.comment_id, comments.votes, comments.created_at, comments.author, comments.body
   FROM comments
@@ -106,7 +106,7 @@ exports.selectCommentsByArticleId = async (article_id) => {
     [article_id]
   );
 
-  if (response.rows.length === 0) {
+  if (rows.length === 0) {
     const articleExists = await checkArticleExists(article_id);
     if (!articleExists) {
       return Promise.reject({
@@ -115,7 +115,7 @@ exports.selectCommentsByArticleId = async (article_id) => {
       });
     }
   }
-  return response.rows;
+  return rows;
 };
 
 exports.insertCommentByArticleId = async (article_id, postBody) => {
@@ -155,7 +155,7 @@ exports.insertCommentByArticleId = async (article_id, postBody) => {
     VALUES ($1, $2, $3) RETURNING *;`,
     [username, article_id, body]
   );
-
+  console.log(rows[0]);
   return rows[0];
 };
 
