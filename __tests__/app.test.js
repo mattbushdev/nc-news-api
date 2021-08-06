@@ -3,14 +3,20 @@ const testData = require("../db/data/test-data/index.js");
 const seed = require("../db/seeds/seed.js");
 const request = require("supertest");
 const app = require("../app");
+const endpointsJSON = require("../endpoints.json");
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 describe("GET - /api", () => {
-  test("200 - returns a json describing all the available endpoints of the API", async () => {
+  test("200 - returns an object describing all the available endpoints of the API", async () => {
     const { body } = await request(app).get("/api").expect(200);
-    expect(body).toHaveLength(7);
+    expect(typeof body.endpoints).toBe("object");
+    expect(body.endpoints).toEqual(endpointsJSON);
+  });
+  test("404 - responds with not found for wrong path", async () => {
+    const { body } = await request(app).get("/invalidpath").expect(404);
+    expect(body.message).toBe("invalid path");
   });
 });
 
@@ -26,10 +32,6 @@ describe("GET - /api/topics", () => {
       expect(topic).toHaveProperty("slug");
       expect(topic).toHaveProperty("description");
     });
-  });
-  test("404 - responds with not found for wrong path", async () => {
-    const { body } = await request(app).get("/api/invalidpath").expect(404);
-    expect(body.message).toBe("invalid path");
   });
 });
 
@@ -268,7 +270,7 @@ describe("GET - /api/articles/:article_id/comments", () => {
 });
 
 describe("POST - /api/articles/:article_id/comments", () => {
-  test.only("201 - returns a new comment from specified article", async () => {
+  test("201 - returns a new comment from specified article", async () => {
     const postComment = {
       username: "icellusedkars",
       body: "not a particularly thrilling read",
