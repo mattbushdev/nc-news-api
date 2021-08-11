@@ -1,7 +1,7 @@
 const db = require("../db/connection");
 
 exports.selectArticleById = async (article_id) => {
-  const response = await db.query(
+  const { rows } = await db.query(
     `SELECT articles.*, 
     COUNT(comment_id) AS comment_count 
     FROM articles 
@@ -11,7 +11,7 @@ exports.selectArticleById = async (article_id) => {
     [article_id]
   );
 
-  if (response.rows.length === 0) {
+  if (rows.length === 0) {
     const articleExists = await checkArticleExists(article_id);
     if (!articleExists) {
       return Promise.reject({
@@ -20,7 +20,7 @@ exports.selectArticleById = async (article_id) => {
       });
     }
   }
-  return response.rows[0];
+  return rows[0];
 };
 
 exports.updateArticleById = async (article_id, body) => {
@@ -36,11 +36,11 @@ exports.updateArticleById = async (article_id, body) => {
       message: "invalid property in request body",
     });
   } else {
-    const response = await db.query(
+    const { rows } = await db.query(
       `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`,
       [inc_votes, article_id]
     );
-    return response.rows[0];
+    return rows[0];
   }
 };
 
@@ -88,8 +88,8 @@ exports.selectArticles = async (query) => {
     const topicExists = await checkTopicExists(topic);
     if (!topicExists) {
       return Promise.reject({
-        status: 400,
-        message: `invalid topic query, topic ${topic} does not exist`,
+        status: 404,
+        message: `topic ${topic} does not exist`,
       });
     }
   }
@@ -120,6 +120,7 @@ exports.selectCommentsByArticleId = async (article_id) => {
 
 exports.insertCommentByArticleId = async (article_id, postBody) => {
   const { username, body } = postBody;
+
   const articleExists = await checkArticleExists(article_id);
   if (!articleExists) {
     return Promise.reject({
@@ -136,17 +137,10 @@ exports.insertCommentByArticleId = async (article_id, postBody) => {
     });
   }
 
-  if (!body) {
+  if (!body || !username) {
     return Promise.reject({
       status: 400,
-      message: "no body property",
-    });
-  }
-
-  if (Object.keys(postBody).length > 2) {
-    return Promise.reject({
-      status: 400,
-      message: "invalid property in request body",
+      message: "no username or body property in request body",
     });
   }
 
@@ -155,7 +149,7 @@ exports.insertCommentByArticleId = async (article_id, postBody) => {
     VALUES ($1, $2, $3) RETURNING *;`,
     [username, article_id, body]
   );
-  console.log(rows[0]);
+
   return rows[0];
 };
 

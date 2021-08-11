@@ -4,7 +4,7 @@ exports.handleRouter404s = (req, res, next) => {
 
 exports.handlePSQLErrors = (err, req, res, next) => {
   if (err.code === "22P02") {
-    res.status(400).send({ message: err.message });
+    res.status(400).send({ message: "invalid input" });
   } else {
     next(err);
   }
