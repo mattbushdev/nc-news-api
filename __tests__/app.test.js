@@ -34,6 +34,91 @@ describe("GET - /api/topics", () => {
   });
 });
 
+describe("GET - /api/articles", () => {
+  test("200 - returns an array of articles", async () => {
+    const { body } = await request(app).get("/api/articles").expect(200);
+    expect(Array.isArray(body.articles)).toEqual(true);
+    expect(body.articles).toHaveLength(12);
+  });
+
+  test("200 - returns articles with correct properties", async () => {
+    const { body } = await request(app).get("/api/articles").expect(200);
+    const { articles } = body;
+    expect(articles.length).toBeGreaterThan(0);
+    articles.forEach((article) => {
+      expect(article).toHaveProperty("article_id");
+      expect(article).toHaveProperty("author");
+      expect(article).toHaveProperty("body");
+      expect(article).toHaveProperty("created_at");
+      expect(article).toHaveProperty("topic");
+      expect(article).toHaveProperty("votes");
+      expect(article).toHaveProperty("comment_count");
+    });
+  });
+
+  test("200 - returns articles that are by default sorted by created_at in descending order", async () => {
+    const { body } = await request(app).get("/api/articles").expect(200);
+    expect(body.articles[0].created_at).toBe("2020-11-03T09:12:00.000Z");
+    expect(body.articles).toBeSortedBy("created_at", { descending: true });
+  });
+
+  test("200 - accepts sort_by query e.g. votes", async () => {
+    const { body } = await request(app)
+      .get("/api/articles?sort_by=votes")
+      .expect(200);
+    expect(body.articles[0].votes).toBe(100);
+    expect(body.articles).toBeSortedBy("votes", { descending: true });
+  });
+
+  test("200 - accepts order as a query e.g.sort by author in ascending order", async () => {
+    const { body } = await request(app)
+      .get("/api/articles?sort_by=author&order=asc")
+      .expect(200);
+    expect(body.articles[0].author).toBe("butter_bridge");
+    expect(body.articles).toBeSortedBy("author", { ascending: true });
+  });
+
+  test("200 - accepts topic as a query to filter articles e.g. filter topic by coding", async () => {
+    const { body } = await request(app)
+      .get("/api/articles?topic=cats")
+      .expect(200);
+    const { articles } = body;
+    expect(articles.length).toBeGreaterThan(0);
+    articles.every((article) => {
+      expect(article.topic).toBe("cats");
+    });
+  });
+
+  test("200 - accepts valid topic as query that has no articles and returns an empty array", async () => {
+    const { body } = await request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200);
+    expect(body.articles).toEqual([]);
+    expect(body.articles).toHaveLength(0);
+  });
+
+  test("400 - responds with bad request when sorting by an invalid column", async () => {
+    const { body } = await request(app)
+      .get("/api/articles?sort_by=name")
+      .expect(400);
+    expect(body.message).toBe("invalid sort by query");
+  });
+
+  test("400 - responds with bad request when ordering by an invalid input", async () => {
+    const { body } = await request(app)
+      .get("/api/articles?order=high")
+      .expect(400);
+    expect(body.message).toBe("invalid order query");
+  });
+
+  test("404 - responds with not found when filtering by an invalid topic", async () => {
+    const { body } = await request(app)
+      .get("/api/articles?topic=bananas")
+      .expect(404);
+    expect(body.message).toBe("topic bananas does not exist");
+  });
+});
+
 describe("GET - /api/articles/:article_id", () => {
   test("200 - returns the specified article with a count of comments", async () => {
     const { body } = await request(app).get("/api/articles/1").expect(200);
@@ -162,91 +247,6 @@ describe("PATCH - /api/articles/:article_id", () => {
   });
 });
 
-describe("GET - /api/articles", () => {
-  test("200 - returns an array of articles", async () => {
-    const { body } = await request(app).get("/api/articles").expect(200);
-    expect(Array.isArray(body.articles)).toEqual(true);
-    expect(body.articles).toHaveLength(12);
-  });
-
-  test("200 - returns articles with correct properties", async () => {
-    const { body } = await request(app).get("/api/articles").expect(200);
-    const { articles } = body;
-    expect(articles.length).toBeGreaterThan(0);
-    articles.forEach((article) => {
-      expect(article).toHaveProperty("article_id");
-      expect(article).toHaveProperty("author");
-      expect(article).toHaveProperty("body");
-      expect(article).toHaveProperty("created_at");
-      expect(article).toHaveProperty("topic");
-      expect(article).toHaveProperty("votes");
-      expect(article).toHaveProperty("comment_count");
-    });
-  });
-
-  test("200 - returns articles that are by default sorted by created_at in descending order", async () => {
-    const { body } = await request(app).get("/api/articles").expect(200);
-    expect(body.articles[0].created_at).toBe("2020-11-03T09:12:00.000Z");
-    expect(body.articles).toBeSortedBy("created_at", { descending: true });
-  });
-
-  test("200 - accepts sort_by query e.g. votes", async () => {
-    const { body } = await request(app)
-      .get("/api/articles?sort_by=votes")
-      .expect(200);
-    expect(body.articles[0].votes).toBe(100);
-    expect(body.articles).toBeSortedBy("votes", { descending: true });
-  });
-
-  test("200 - accepts order as a query e.g.sort by author in ascending order", async () => {
-    const { body } = await request(app)
-      .get("/api/articles?sort_by=author&order=asc")
-      .expect(200);
-    expect(body.articles[0].author).toBe("butter_bridge");
-    expect(body.articles).toBeSortedBy("author", { ascending: true });
-  });
-
-  test("200 - accepts topic as a query to filter articles e.g. filter topic by coding", async () => {
-    const { body } = await request(app)
-      .get("/api/articles?topic=cats")
-      .expect(200);
-    const { articles } = body;
-    expect(articles.length).toBeGreaterThan(0);
-    articles.every((article) => {
-      expect(article.topic).toBe("cats");
-    });
-  });
-
-  test("200 - accepts valid topic as query that has no articles and returns an empty array", async () => {
-    const { body } = await request(app)
-      .get("/api/articles?topic=paper")
-      .expect(200);
-    expect(body.articles).toEqual([]);
-    expect(body.articles).toHaveLength(0);
-  });
-
-  test("400 - responds with bad request when sorting by an invalid column", async () => {
-    const { body } = await request(app)
-      .get("/api/articles?sort_by=name")
-      .expect(400);
-    expect(body.message).toBe("invalid sort by query");
-  });
-
-  test("400 - responds with bad request when ordering by an invalid input", async () => {
-    const { body } = await request(app)
-      .get("/api/articles?order=high")
-      .expect(400);
-    expect(body.message).toBe("invalid order query");
-  });
-
-  test("404 - responds with not found when filtering by an invalid topic", async () => {
-    const { body } = await request(app)
-      .get("/api/articles?topic=bananas")
-      .expect(404);
-    expect(body.message).toBe("topic bananas does not exist");
-  });
-});
-
 describe("GET - /api/articles/:article_id/comments", () => {
   test("200 - returns an array of comments for the given article_id", async () => {
     const { body } = await request(app)
@@ -359,6 +359,86 @@ describe("POST - /api/articles/:article_id/comments", () => {
       .send(postComment)
       .expect(404);
     expect(body.message).toBe("username: matt does not exist");
+  });
+});
+
+describe("PATCH - /api/comments/:comment_id", () => {
+  test("200 - returns updated votes on comment when passed a positive number", async () => {
+    const updateVotes = {
+      inc_votes: 1,
+    };
+    const { body } = await request(app)
+      .patch("/api/comments/5")
+      .send(updateVotes)
+      .expect(200);
+    expect(body.comment).toEqual({
+      comment_id: 5,
+      author: "butter_bridge",
+      article_id: 1,
+      votes: 1,
+      created_at: "2020-11-03T21:00:00.000Z",
+      body: "I hate streaming noses",
+    });
+  });
+
+  test("200 - returns updated votes on comment when passed a negative number", async () => {
+    const updateVotes = {
+      inc_votes: -10,
+    };
+    const { body } = await request(app)
+      .patch("/api/comments/2")
+      .send(updateVotes)
+      .expect(200);
+    expect(body.comment).toEqual({
+      comment_id: 2,
+      author: "butter_bridge",
+      article_id: 1,
+      votes: 4,
+      created_at: "2020-10-31T03:03:00.000Z",
+      body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+    });
+  });
+
+  test("200 - ignores invalid properties on request body and returns updated votes", async () => {
+    const updateVotes = {
+      inc_votes: 1,
+      author: "new-author",
+    };
+    const { body } = await request(app)
+      .patch("/api/comments/5")
+      .send(updateVotes)
+      .expect(200);
+    expect(body.comment).toEqual({
+      comment_id: 5,
+      author: "butter_bridge",
+      article_id: 1,
+      votes: 1,
+      created_at: "2020-11-03T21:00:00.000Z",
+      body: "I hate streaming noses",
+    });
+  });
+
+  test("400 - responds with bad request for invalid comment_id", async () => {
+    const updateVotes = {
+      inc_votes: 1,
+    };
+    const { body } = await request(app)
+      .patch("/api/comments/kitten")
+      .send(updateVotes)
+      .expect(400);
+    expect(body.message).toBe("invalid input");
+  });
+
+  test("404 - responds with not found for non-existent comment_id", async () => {
+    const updateVotes = {
+      inc_votes: 1,
+    };
+
+    const { body } = await request(app)
+      .patch("/api/comments/25")
+      .send(updateVotes)
+      .expect(404);
+    expect(body.message).toBe("comment id does not exist");
   });
 });
 
