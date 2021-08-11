@@ -362,7 +362,7 @@ describe("POST - /api/articles/:article_id/comments", () => {
   });
 });
 
-describe.only("DELETE - /api/comments/:comment_id", () => {
+describe("DELETE - /api/comments/:comment_id", () => {
   test("204 - returns status code 204 and deletes comment by specified comment id", async () => {
     const { body } = await request(app).delete("/api/comments/18").expect(204);
   });
@@ -375,5 +375,18 @@ describe.only("DELETE - /api/comments/:comment_id", () => {
   test("404 - responds with not found for non-existent comment_id", async () => {
     const { body } = await request(app).delete("/api/comments/19").expect(404);
     expect(body.message).toBe("comment id does not exist");
+  });
+});
+
+describe("GET - /api/users", () => {
+  test("200 - returns an array of users", async () => {
+    const { body } = await request(app).get("/api/users");
+    const { users } = body;
+    expect(Array.isArray(users)).toBe(true);
+    expect(users.length).toBeGreaterThan(0);
+    expect(users).toHaveLength(4);
+    users.forEach((user) => {
+      expect(user).toHaveProperty("username");
+    });
   });
 });
