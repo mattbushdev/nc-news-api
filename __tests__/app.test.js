@@ -380,7 +380,7 @@ describe("DELETE - /api/comments/:comment_id", () => {
 
 describe("GET - /api/users", () => {
   test("200 - returns an array of users", async () => {
-    const { body } = await request(app).get("/api/users");
+    const { body } = await request(app).get("/api/users").expect(200);
     const { users } = body;
     expect(Array.isArray(users)).toBe(true);
     expect(users.length).toBeGreaterThan(0);
@@ -388,5 +388,22 @@ describe("GET - /api/users", () => {
     users.forEach((user) => {
       expect(user).toHaveProperty("username");
     });
+  });
+});
+
+describe("GET - /api/users/:username", () => {
+  test("200 - returns an object of the user by the specified username", async () => {
+    const { body } = await request(app).get("/api/users/lurker").expect(200);
+    expect(body.user).toEqual({
+      username: "lurker",
+      avatar_url:
+        "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+      name: "do_nothing",
+    });
+  });
+
+  test("404 - responds with not found for non-existent username", async () => {
+    const { body } = await request(app).get("/api/users/bobby").expect(404);
+    expect(body.message).toBe("username does not exist");
   });
 });
