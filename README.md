@@ -2,7 +2,7 @@
 
 Northcoders (NC) News Service API is a project built for the purpose of accessing application data programmatically. The intention is to mimic the building of a real world backend news service (such as reddit) which should provide this data to the front end architecture.
 
-To take a look at the API endpoints and view it in action click [here] (https://nc-news-service-backend.herokuapp.com/api).
+To take a look at the API endpoints and view it in action click [here](https://nc-news-service-backend.herokuapp.com/api).
 
 ## Table of contents
 
@@ -18,7 +18,7 @@ To take a look at the API endpoints and view it in action click [here] (https://
 The technologies and packages used for this project are listed below:
 
 - [node.js](https://nodejs.org/en/) v14.17.4 LTS
-- [postgresSQL](https://www.postgresql.org/) v13.0.0
+- [postgreSQL](https://www.postgresql.org/) v13.0.0
 
 Project dependencies:
 
@@ -49,7 +49,9 @@ To run nc news service API locally you will need to follow the steps below:
     npm install
 ```
 
-**Optional** 4. In order to run the tests install the following dev dependencies:
+**Optional**
+
+4. In order to run the tests install the following dev dependencies:
 
 ```
   npm install -D jest jest-sorted supertest
@@ -64,6 +66,7 @@ To run nc news service API locally you will need to follow the steps below:
 ## Setting up enivronment variables
 
 You will need to create two .env files for this project:
+
 .env.test containing:
 
 ```
@@ -100,7 +103,7 @@ See below for a complete list of endpoints that are accessible on the server.
 **Alternatively** an overview of endpoints, descriptions and examples are provided on the /api endpoint.
 
 ```
-   GET /api
+    GET /api
     GET /api/topics
     GET /api/articles
     GET /api/articles/:article_id
