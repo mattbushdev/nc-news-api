@@ -44,7 +44,7 @@
     }
   },
   "PATCH /api/articles/:article_id": {
-    "description": "updates the votes value by article id",
+    "description": "updates the votes value on the specified article",
     "exampleRequestBody": {
       "inc_votes": 1
     },
@@ -83,7 +83,7 @@
     }
   },
   "POST /api/articles/article_id/comments": {
-    "description": "user can add a new comment to a specific article id",
+    "description": "adds a new comment to a specific article id",
     "exampleRequestBody": {
       "username": "icellusedkars",
       "body": "not a particularly thrilling read"
@@ -95,6 +95,41 @@
       "votes": 0,
       "created_at": "2021-08-06T08:09:53.928Z",
       "body": "not a particularly thrilling read"
+    }
+  },
+  "PATCH /api/comments/comment_id": {
+    "description": "updates the votes value on specified comment",
+    "exampleRequestBody": {
+      "inc_votes": 1
+    },
+    "exampleResponse": {
+      "comment_id": 5,
+      "author": "butter_bridge",
+      "article_id": 1,
+      "votes": 1,
+      "created_at": "2020-11-03T21:00:00.000Z",
+      "body": "I hate streaming noses"
+    }
+  },
+  "DELETE /api/comments/comment_id": {
+    "description": "deletes specified comment",
+    "exampleResponse": 204
+  },
+  "GET /api/users": {
+    "description": "serves an array of usernames",
+    "exampleResponse": [
+      { "username": "butter_bridge" },
+      { "username": "icellusedkars" },
+      { "username": "rogersop" },
+      { "username": "lurker" }
+    ]
+  },
+  "GET /api/users/:username": {
+    "description": "serves a user object from the specified username",
+    "exampleResponse": {
+      "username": "lurker",
+      "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+      "name": "do_nothing"
     }
   }
 }
