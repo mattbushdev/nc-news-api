@@ -31,7 +31,7 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
    votes INT DEFAULT 0 NOT NULL,
    topic VARCHAR(100) REFERENCES topics(slug) NOT NULL,
    author VARCHAR(100) REFERENCES users(username) NOT NULL,
-   created_at TIMESTAMP DEFAULT NOW() NOT NULL
+   created_at TIMESTAMPTZ DEFAULT NOW() NOT NULL
     );`);
 
   await db.query(`CREATE TABLE comments (

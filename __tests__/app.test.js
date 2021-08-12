@@ -126,7 +126,7 @@ describe("GET - /api/articles/:article_id", () => {
       article_id: 1,
       author: "butter_bridge",
       body: "I find this existence challenging",
-      created_at: "2020-07-09T20:11:00.000Z",
+      created_at: "2020-07-09T21:11:00.000Z",
       title: "Living in the shadow of a great man",
       topic: "mitch",
       votes: 100,
@@ -143,7 +143,7 @@ describe("GET - /api/articles/:article_id", () => {
       votes: 0,
       topic: "mitch",
       author: "icellusedkars",
-      created_at: "2020-10-16T05:03:00.000Z",
+      created_at: "2020-10-16T06:03:00.000Z",
       comment_count: "0",
     });
   });
@@ -175,7 +175,7 @@ describe("PATCH - /api/articles/:article_id", () => {
       votes: 1,
       topic: "cats",
       author: "rogersop",
-      created_at: "2020-08-03T13:14:00.000Z",
+      created_at: "2020-08-03T14:14:00.000Z",
     });
   });
 
@@ -194,7 +194,7 @@ describe("PATCH - /api/articles/:article_id", () => {
       votes: -10,
       topic: "cats",
       author: "rogersop",
-      created_at: "2020-08-03T13:14:00.000Z",
+      created_at: "2020-08-03T14:14:00.000Z",
     });
   });
 
