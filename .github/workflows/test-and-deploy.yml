@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-node@v2
 
       - name: Setup Postgres
-        uses: harmon758/postgresql-actions@v1
+        uses: harmon758/postgresql-action@v1
         with:
           postgresql db: test_db
           postgresql user: test_user
