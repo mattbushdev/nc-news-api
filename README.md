@@ -24,7 +24,7 @@ Project dependencies:
 
 - [dotenv](https://www.npmjs.com/package/dotenv) v10.0.0
 - [express](https://expressjs.com/) v4.17.1
-- [pg](https://www.postgresql.org/) v8.7.1
+- [pg](https://node-postgres.com/) v8.7.1
 - [pg-format](https://www.npmjs.com/package/pg-format) v1.0.4
 
 Dev dependencies:
