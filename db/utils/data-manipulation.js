@@ -25,16 +25,14 @@ exports.formatArticleData = (articleData) => {
 
 exports.formatCommentData = (commentData, articleDataResult) => {
   return commentData.map((comment) => {
-    let author = "";
     let article_id = 0;
     articleDataResult.forEach((article) => {
       if (comment.belongs_to === article.title) {
-        author = article.author;
         article_id = article.article_id;
       }
     });
     return [
-      author,
+      comment.created_by,
       article_id,
       comment.votes,
       comment.created_at,
