@@ -50,20 +50,6 @@ describe("formatCommentData", () => {
     expect(formatCommentData([])).toEqual([]);
   });
 
-  test("takes comment with created_by key and replaces it with author name as first value in nested array", async () => {
-    const comment = [
-      {
-        body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
-        belongs_to: "They're not exactly dogs, are they?",
-        created_by: "butter_bridge",
-        votes: 16,
-        created_at: new Date(1586179020000),
-      },
-    ];
-    const { rows } = await db.query(`SELECT * FROM articles`);
-    expect(formatCommentData(comment, rows)[0][0]).toEqual("butter_bridge");
-  });
-
   test("return a nested array of values in correct order from the passed object keys", async () => {
     const comment = [
       {
