@@ -373,7 +373,7 @@ describe("PATCH - /api/comments/:comment_id", () => {
       .expect(200);
     expect(body.comment).toEqual({
       comment_id: 5,
-      author: "butter_bridge",
+      author: "icellusedkars",
       article_id: 1,
       votes: 1,
       created_at: "2020-11-03T21:00:00.000Z",
@@ -410,7 +410,7 @@ describe("PATCH - /api/comments/:comment_id", () => {
       .expect(200);
     expect(body.comment).toEqual({
       comment_id: 5,
-      author: "butter_bridge",
+      author: "icellusedkars",
       article_id: 1,
       votes: 1,
       created_at: "2020-11-03T21:00:00.000Z",
