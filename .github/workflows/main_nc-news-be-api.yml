@@ -21,6 +21,13 @@ jobs:
         with:
           node-version: "16.x"
 
+      - name: Setup Postgres
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql db: test_db
+          postgresql user: test_user
+          postgresql password: testpassword1
+
       - name: npm install, build and test
         run: |
           npm install
