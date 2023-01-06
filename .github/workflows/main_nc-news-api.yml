@@ -57,6 +57,3 @@ jobs:
           slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_09FF4638AD354FB48ED2144E5CA425BA }}
           package: .
-
-      - name: "Seed database"
-        run: NODE_ENV=production DB_CONNECTION_STRING=${{ secrets.DB_CONNECTION_STRING}} npm run seed
