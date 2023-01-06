@@ -1,7 +1,4 @@
-# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
-# More GitHub Actions for Azure: https://github.com/Azure/actions
-
-name: Build and deploy Node.js app to Azure Web App - nc-news-api
+name: Build and deploy nc-news-api to Azure Web App
 
 on:
   push:
@@ -19,13 +16,20 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v1
         with:
-          node-version: '16.x'
+          node-version: "16.x"
+
+      - name: Set up Postgres
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql db: test_db
+          postgresql user: test_user
+          postgresql password: testpassword1
 
       - name: npm install, build, and test
         run: |
           npm install
           npm run build --if-present
-          npm run test --if-present
+          DBNAME=test_db DBUSER=test_user DBPASSWORD=testpassword1 npm t
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
@@ -37,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: 'Production'
+      name: "Production"
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
@@ -46,11 +50,14 @@ jobs:
         with:
           name: node-app
 
-      - name: 'Deploy to Azure Web App'
+      - name: "Deploy to Azure Web App"
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'nc-news-api'
-          slot-name: 'Production'
+          app-name: "nc-news-api"
+          slot-name: "Production"
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_09FF4638AD354FB48ED2144E5CA425BA }}
           package: .
+
+      - name: "Seed database"
+        run: NODE_ENV=production DBHOST=${{ secrets.DBHOST}} npm run seed
