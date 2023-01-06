@@ -6,14 +6,14 @@ require("dotenv").config({
   path: path.resolve(__dirname, `../.env.${ENV}`),
 });
 
-if (!process.env.PGDATABASE && !process.env.DATABASE_URL) {
-  throw new Error("PGDATABASE or DATABASE_URL not set");
+if (!process.env.DBNAME && !process.env.DBHOST) {
+  throw new Error("DBNAME or DBHOST not set");
 }
 
 const config =
   ENV === "production"
     ? {
-        connectionString: process.env.DATABASE_URL,
+        connectionString: process.env.DBHOST,
         ssl: {
           rejectUnauthorized: false,
         },

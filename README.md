@@ -70,13 +70,13 @@ You will need to create two .env files for this project:
 .env.test containing:
 
 ```
-  PGDATABASE=nc_news_test
+  DBNAME=nc_news_test
 ```
 
 .env.development containing:
 
 ```
-  PGDATABASE=nc_news
+  DBNAME=nc_news
 ```
 
 Make sure that these .env files are .gitignored.
