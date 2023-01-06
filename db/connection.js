@@ -6,14 +6,14 @@ require("dotenv").config({
   path: path.resolve(__dirname, `../.env.${ENV}`),
 });
 
-if (!process.env.DBNAME && !process.env.DBHOST) {
-  throw new Error("DBNAME or DBHOST not set");
+if (!process.env.DBNAME && !process.env.DB_CONNECTION_STRING) {
+  throw new Error("DBNAME or DB_CONNECTION_STRING not set");
 }
 
 const config =
   ENV === "production"
     ? {
-        connectionString: process.env.DBHOST,
+        connectionString: process.env.DB_CONNECTION_STRING,
         ssl: {
           rejectUnauthorized: false,
         },
