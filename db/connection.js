@@ -2,11 +2,10 @@ const { Pool } = require("pg");
 const path = require("path");
 const loggerInstance = require("../logger");
 
+const ENV = process.env.NODE_ENV || "development";
 require("dotenv").config({
   path: path.resolve(__dirname, `../.env.${ENV}`),
 });
-
-const ENV = process.env.NODE_ENV || "development";
 
 const logger = loggerInstance.newLogger("connection");
 
