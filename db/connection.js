@@ -1,13 +1,19 @@
 const { Pool } = require("pg");
 const path = require("path");
-const { logger } = require("../app");
-const ENV = process.env.NODE_ENV || "development";
+const loggerInstance = require("../logger");
 
 require("dotenv").config({
   path: path.resolve(__dirname, `../.env.${ENV}`),
 });
 
-if (!process.env.DBNAME && !process.env.DB_CONNECTION_STRING) {
+const ENV = process.env.NODE_ENV || "development";
+
+const logger = loggerInstance.newLogger("connection");
+
+const dbName = process.env.DBNAME;
+const dbConnectionString = process.env.DB_CONNECTION_STRING;
+
+if (!dbName && !dbConnectionString) {
   throw new Error("DBNAME or DB_CONNECTION_STRING not set");
 }
 
@@ -15,10 +21,10 @@ const config =
   ENV === "production"
     ? {
         user: process.env.DBUSER,
-        name: process.env.DBNAME,
+        name: dbName,
         host: process.env.DBHOST,
         password: process.env.DBPASS,
-        connectionString: process.env.DB_CONNECTION_STRING,
+        connectionString: dbConnectionString,
         ssl: {
           rejectUnauthorized: false,
         },
@@ -27,7 +33,7 @@ const config =
 
 const pool = new Pool(config);
 logger.info(
-  `Connection set with ${ENV} config for database:"${DBNAME}". Total pool count = ${pool.totalCount}`
+  `Connection set with ${ENV} config for database:"${dbName}". Total pool count = ${pool.totalCount}`
 );
 
 module.exports = pool;
