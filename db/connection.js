@@ -1,5 +1,6 @@
 const { Pool } = require("pg");
 const path = require("path");
+const { logger } = require("../app");
 const ENV = process.env.NODE_ENV || "development";
 
 require("dotenv").config({
@@ -24,4 +25,9 @@ const config =
       }
     : {};
 
-module.exports = new Pool(config);
+const pool = new Pool(config);
+logger.info(
+  `Connection set with ${ENV} config for database:"${DBNAME}". Total pool count = ${pool.totalCount}`
+);
+
+module.exports = pool;
