@@ -35,4 +35,4 @@ logger.info(
   `Connection set with ${ENV} config for database:"${dbName}". Total pool count = ${pool.totalCount}`
 );
 
-module.exports = pool;
+module.exports = { pool, logger };

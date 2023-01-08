@@ -1,11 +1,10 @@
 const devData = require("../data/development-data/index.js");
 const seed = require("./seed.js");
-const db = require("../connection.js");
-const { logger } = require("../../app.js");
+const { pool, logger } = require("../connection.js");
 
 const runSeed = () => {
-  logger.info(`running seed... pool count = ${db.totalCount}`);
-  return seed(devData).then(() => db.end());
+  logger.info(`running seed... pool count = ${pool.totalCount}`);
+  return seed(devData).then(() => pool.end());
 };
 
 runSeed();
