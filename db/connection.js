@@ -30,9 +30,9 @@ const config =
       }
     : {};
 
-const pool = new Pool(config);
+const db = new Pool(config);
 logger.info(
-  `Connection set with ${ENV} config for database:"${dbName}". Total pool count = ${pool.totalCount}`
+  `Connection set with ${ENV} config for database:"${dbName}". Total pool count = ${db.totalCount}`
 );
 
-module.exports = { pool, logger };
+module.exports = { db, logger };

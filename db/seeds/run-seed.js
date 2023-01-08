@@ -1,10 +1,19 @@
 const devData = require("../data/development-data/index.js");
 const seed = require("./seed.js");
-const { pool, logger } = require("../connection.js");
+const { db, logger } = require("../connection.js");
 
-const runSeed = () => {
-  logger.info(`running seed... pool count = ${pool.totalCount}`);
-  return seed(devData).then(() => pool.end());
+const runSeed = async () => {
+  try {
+    logger.info("Running seed.");
+
+    await seed(devData);
+
+    await db.end();
+
+    logger.info("Seed complete, ending connection.");
+  } catch (err) {
+    logger.error(err);
+  }
 };
 
 runSeed();
