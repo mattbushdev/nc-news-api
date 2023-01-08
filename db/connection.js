@@ -13,6 +13,10 @@ if (!process.env.DBNAME && !process.env.DB_CONNECTION_STRING) {
 const config =
   ENV === "production"
     ? {
+        user: process.env.DBUSER,
+        name: process.env.DBNAME,
+        host: process.env.DBHOST,
+        password: process.env.DBPASS,
         connectionString: process.env.DB_CONNECTION_STRING,
         ssl: {
           rejectUnauthorized: false,
