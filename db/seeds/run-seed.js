@@ -8,8 +8,6 @@ const runSeed = async () => {
 
     await seed(devData);
 
-    await db.end();
-
     logger.info("Seed complete, ending connection.");
   } catch (err) {
     logger.error(err);

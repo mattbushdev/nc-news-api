@@ -10,6 +10,7 @@ const {
 const seed = async ({ articleData, commentData, topicData, userData }) => {
   try {
     logger.info(`Creating tables`);
+    await db.connect();
 
     await db.query(`DROP TABLE IF EXISTS comments;`);
     await db.query(`DROP TABLE IF EXISTS articles;`);
@@ -81,6 +82,8 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
     );
 
     const commentDataResult = await db.query(commentDataInsert);
+
+    await db.end();
   } catch (err) {
     logger.error(err);
   }
