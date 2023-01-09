@@ -31,7 +31,7 @@ const config =
 
 const db = new Pool(config);
 logger.info(
-  `Connection set with ${ENV} config for database:"${dbName}". Total pool count = ${db.totalCount}`
+  `Connecting ${ENV} to ${config.database} database as ${config.user} on ${config.host}:${config.port}. Total pool count = ${db.totalCount}`
 );
 
 module.exports = { db, logger };
