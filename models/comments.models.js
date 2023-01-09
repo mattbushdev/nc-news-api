@@ -1,4 +1,4 @@
-const db = require("../db/connection");
+const { db } = require("../db/connection");
 
 exports.removeCommentById = async (comment_id) => {
   const commentExists = await checkCommentExists(comment_id);

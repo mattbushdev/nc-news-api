@@ -1,4 +1,4 @@
-const db = require("../db/connection");
+const { db } = require("../db/connection");
 
 exports.selectArticleById = async (article_id) => {
   const { rows } = await db.query(
