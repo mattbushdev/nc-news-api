@@ -20,13 +20,12 @@ const config =
   ENV === "production"
     ? {
         user: process.env.DBUSER,
-        name: dbName,
+        database: dbName,
         host: process.env.DBHOST,
+        port: process.env.DBPORT,
         password: process.env.DBPASS,
         connectionString: dbConnectionString,
-        ssl: {
-          rejectUnauthorized: false,
-        },
+        ssl: true,
       }
     : {};
 
