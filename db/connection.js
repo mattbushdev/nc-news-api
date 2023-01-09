@@ -9,29 +9,24 @@ require("dotenv").config({
 
 const logger = loggerInstance.newLogger("connection");
 
-const dbName = process.env.DBNAME;
-const dbConnectionString = process.env.DB_CONNECTION_STRING;
+const database = process.env.DBNAME;
+const user = process.env.DBUSER;
+const password = process.env.DBPASS;
+const server = process.env.DBHOST;
 
-if (!dbName && !dbConnectionString) {
-  throw new Error("DBNAME or DB_CONNECTION_STRING not set");
+if (!database && !server) {
+  throw new Error("database name or server not set");
 }
 
-const config =
-  ENV === "production"
-    ? {
-        user: process.env.DBUSER,
-        database: dbName,
-        host: process.env.DBHOST,
-        port: process.env.DBPORT,
-        password: process.env.DBPASS,
-        connectionString: dbConnectionString,
-        ssl: true,
-      }
-    : {};
+const connectionString = `postgres://${user}@${server}:${password}@${server}.postgres.database.azure.com:5432/${database}`;
 
-const db = new Pool(config);
+const db = new Pool({
+  connectionString: connectionString,
+  ssl: true,
+});
+
 logger.info(
-  `Connecting ${ENV} to ${config.database} database as ${config.user} on ${config.host}:${config.port}. Total pool count = ${db.totalCount}`
+  `Connecting ${ENV} to ${database} database as ${user} on ${server}:5432. Total pool count = ${db.totalCount}`
 );
 
 module.exports = { db, logger };
