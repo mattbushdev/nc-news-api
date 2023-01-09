@@ -1,4 +1,6 @@
-const { logger } = require("./app");
+const loggerInstance = require("./logger");
+
+const logger = loggerInstance.newLogger("errorHandler");
 
 exports.handleRouter404s = (req, res, next) => {
   logger.error(`${err.statusCode} ${req.method} ${req.url}`);
