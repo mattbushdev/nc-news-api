@@ -1,8 +1,8 @@
-# NC News Service API
+# NC News API
 
-Northcoders (NC) News Service API is a project built for the purpose of accessing application data programmatically. The intention is to mimic the building of a real world backend news service (such as reddit) which should provide this data to the front end architecture.
+Northcoders (NC) News API is a project built for the purpose of accessing application data programmatically. The intention is to mimic the building of a real world backend news service (such as reddit) which should provide this data to the front end architecture. The API is hosted through Azure App Service.
 
-To take a look at the API endpoints and view it in action click [here](https://nc-news-service-backend.herokuapp.com/api).
+To take a look at the API endpoints and view them in action click [here](https://nc-news-api.azurewebsites.net/api/).
 
 ## Table of contents
 
@@ -35,7 +35,7 @@ Dev dependencies:
 
 ## Installation
 
-To run nc news service API locally you will need to follow the steps below:
+To run the API locally you will need to follow the steps below:
 
 1. Ensure that you have installed:
 
